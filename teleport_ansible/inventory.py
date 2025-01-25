@@ -118,7 +118,11 @@ def main():
                 host_vars = meta_data[hostname] = dict()
 
             host_vars[k] = v
-            host_vars["teleport_id"] = node["metadata"]["id"]
+            # Check if 'id' key exists in labels before accessing it
+            if "id" in node["metadata"]["labels"]:
+                host_vars["teleport_id"] = node["metadata"]["labels"]["id"]
+            else:
+                host_vars["teleport_id"] = None  # or handle it as needed
 
             # If a label is an ansible variable, omit it from groups
             if k.startswith("ansible_"):
